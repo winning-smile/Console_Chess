@@ -7,6 +7,9 @@ from termcolor import colored
 
 os.system('color')
 
+logic_dict = {"P" : pawn_logic, "K" : knight_logic, "B" : bishop_logic,
+              "R" : rook_logic, "S" : king_logic, "Q" : queen_logic}
+
 
 class Figure:
     def __init__(self, value, color, fid, xy):
@@ -48,8 +51,13 @@ def start(board_):
     board_[7][7] = Figure("R", "White", 32, [7, 7])
 
 
-def board_output(board_):
+def board_output(board_, i):
     """ Выводит актуальную позицию доски """
+    print("       " + f"Turn {i}")
+    if (i) % 2 != 0:
+        print("   " + "Turn for " + colored("WHITE", "blue"))
+    else:
+        print("   " + "Turn for " + colored("BLACK", "red"))
     print(" " * 3, end="")
     print(' '.join([f"{k+1}" for k in range(8)]), end=" ")
     print("")
@@ -87,78 +95,39 @@ def board_output(board_):
     print(' '.join([f"{k + 1}" for k in range(8)]), end=" ")
 
 
-def board_input(board_, old, new):
+def board_input(board_, old, new, i):
     """Передвигает фигуру по координатам old на координаты new"""
     xo = int(old[0]) - 1
     yo = int(old[2]) - 1
     xn = int(new[0]) - 1
     yn = int(new[2]) - 1
-    figure = board_[xo][yo].val
+    color_flag = ""
+    """Переделать на тернарник"""
 
-    """Переделать на словарь"""
-    if figure == "P":
-        if pawn_logic(board_, xo, yo, xn, yn):
-            tmp = board_[xo][yo]
-            board_[xo][yo] = 0
-            board_[xn][yn] = tmp
-            return board_
-        else:
-            print("Неправильный ход")
-            return board_
-    elif figure == "K":
-        if knight_logic(board_, xo, yo, xn, yn):
-            tmp = board_[xo][yo]
-            board_[xo][yo] = 0
-            board_[xn][yn] = tmp
-            return board_
-        else:
-            print("Неправильный ход")
-            return board_
-    elif figure == "B":
-        if bishop_logic(board_, xo, yo, xn, yn):
-            tmp = board_[xo][yo]
-            board_[xo][yo] = 0
-            board_[xn][yn] = tmp
-            return board_
-        else:
-            print("Неправильный ход")
-            return board_
-    elif figure == "R":
-        if rook_logic(board_, xo, yo, xn, yn):
-            tmp = board_[xo][yo]
-            board_[xo][yo] = 0
-            board_[xn][yn] = tmp
-            return board_
-        else:
-            print("Неправильный ход")
-            return board_
-    elif figure == "Q":
-        if queen_logic(board_, xo, yo, xn, yn):
-            tmp = board_[xo][yo]
-            board_[xo][yo] = 0
-            board_[xn][yn] = tmp
-            return board_
-        else:
-            print("Неправильный ход")
-            return board_
-    elif figure == "S":
-        if king_logic(board_, xo, yo, xn, yn):
-            tmp = board_[xo][yo]
-            board_[xo][yo] = 0
-            board_[xn][yn] = tmp
-            return board_
-        else:
-            print("Неправильный ход")
-            return board_
+    if i % 2 != 0:
+        color_flag = "White"
     else:
-        print("Ты даун.")
-        return board_
+        color_flag = "Black"
 
+    if board_[xo][yo] and color_flag == board_[xo][yo]:
+        figure = board_[xo][yo].val
+        logic_dict[figure](board_, xo, yo, xn, yn)
+        tmp = board_[xo][yo]
+        board_[xo][yo] = 0
+        board_[xn][yn] = tmp
+        return board_, True
+
+    else:
+        return board_, False
 
 if __name__ == '__main__':
+    i = 1   # Turn counter
     board = np.zeros((8, 8), dtype=object)
     start(board)
     while True:
         clear_console()
-        board_output(board)
-        board = board_input(board, list(input("\nКоординаты фигуры: ")), list(input("Куда передвинуть: ")))
+        board_output(board, i)
+        board, flag = board_input(board, list(input("\nКоординаты фигуры: ")), list(input("Куда передвинуть: ")), i)
+        if flag:
+            i += 1  # Turn counter
+
