@@ -69,7 +69,7 @@ def knight_logic(board, xo, yo, xn, yn):
             if not board[xn][yn] or board[xn][yn].color == "Black":
                 return True
 
-    if board[xo][yo].color == "Black":
+    elif board[xo][yo].color == "Black":
         if abs(xo - xn) == 1 and abs(yo - yn) == 2:
             if not board[xn][yn] or board[xn][yn].color == "White":
                 return True
@@ -80,17 +80,30 @@ def knight_logic(board, xo, yo, xn, yn):
 
     return False
 
-
 def bishop_logic(board, xo, yo, xn, yn):
     """Логика слона """
     if board[xo][yo].color == "White":
         if abs(xo-xn) == abs(yo-yn) and xo-xn != 0:
             if not board[xn][yn] or board[xn][yn].color == "Black":
+                xo, xn = (xn, xo) if xo > xn else (xo, xn)
+                yo, yn = (yn, yo) if yo > yn else (yo, yn)
+                for i,j in zip(range(xo+1, xn, 1), range(yo+1, yn, 1)):
+                    if board[i][j]:
+                        return False
+                    else:
+                        pass
                 return True
 
-    if board[xo][yo].color == "Black":
+    elif board[xo][yo].color == "Black":
         if abs(xo-xn) == abs(yo-yn) and xo-xn != 0:
             if not board[xn][yn] or board[xn][yn].color == "White":
+                xo, xn = (xn, xo) if xo > xn else (xo, xn)
+                yo, yn = (yn, yo) if yo > yn else (yo, yn)
+                for i,j in zip(range(xo+1, xn, 1), range(yo+1, yn, 1)):
+                    if board[i][j]:
+                        return False
+                    else:
+                        pass
                 return True
 
     return False
@@ -101,11 +114,39 @@ def rook_logic(board, xo, yo, xn, yn):
     if board[xo][yo].color == "White":
         if (xo == xn and yo != yn) or (xo != xn and yo == yn):
             if not board[xn][yn] or board[xn][yn].color == "Black":
+                t1, t2 = (xo, xn) if yo == yn else (yo, yn)
+                t1, t2 = (t2, t1) if t1 > t2 else (t1, t2)
+                if yo == yn:
+                    for i in range(t1+1, t2, 1):
+                        if board[i][yn]:
+                            return False
+                        else:
+                            pass
+                else:
+                    for i in range(t1+1, t2, 1):
+                        if board[xn][i]:
+                            return False
+                        else:
+                            pass
                 return True
 
-    if board[xo][yo].color == "Black":
+    elif board[xo][yo].color == "Black":
         if (xo == xn and yo != yn) or (xo != xn and yo == yn):
             if not board[xn][yn] or board[xn][yn].color == "White":
+                t1, t2 = (xo, xn) if yo == yn else (yo, yn)
+                t1, t2 = (t2, t1) if t1 > t2 else (t1, t2)
+                if yo == yn:
+                    for i in range(t1+1, t2, 1):
+                        if board[i][yn]:
+                            return False
+                        else:
+                            pass
+                else:
+                    for i in range(t1+1, t2, 1):
+                        if board[xn][i]:
+                            return False
+                        else:
+                            pass
                 return True
 
     return False
@@ -118,7 +159,7 @@ def king_logic(board, xo, yo, xn, yn):
             if not board[xn][yn] or board[xn][yn].color == "Black":
                 return True
 
-    if board[xo][yo].color == "Black":
+    elif board[xo][yo].color == "Black":
         if abs(xo-xn) == 1 or abs(yo-yn) == 1:
             if not board[xn][yn] or board[xn][yn].color == "White":
                 return True
@@ -129,13 +170,15 @@ def king_logic(board, xo, yo, xn, yn):
 def queen_logic(board, xo, yo, xn, yn):
     """Логика ферзя"""
     if board[xo][yo].color == "White":
-        if (abs(xo - xn) == abs(yo - yn) and xo - xn != 0) or ((xo == xn and yo != yn) or (xo != xn and yo == yn)):
-            if not board[xn][yn] or board[xn][yn].color == "Black":
-                return True
+        if (abs(xo - xn) == abs(yo - yn) and xo - xn != 0):
+            bishop_logic(board, xo, yo, xn, yn)
+        elif ((xo == xn and yo != yn) or (xo != xn and yo == yn)):
+            rook_logic(board, xo, yo, xn, yn)
 
-    if board[xo][yo].color == "Black":
-        if (abs(xo - xn) == abs(yo - yn) and xo - xn != 0) or ((xo == xn and yo != yn) or (xo != xn and yo == yn)):
-            if not board[xn][yn] or board[xn][yn].color == "White":
-                return True
+    elif board[xo][yo].color == "Black":
+        if (abs(xo - xn) == abs(yo - yn) and xo - xn != 0):
+            bishop_logic(board, xo, yo, xn, yn)
+        elif ((xo == xn and yo != yn) or (xo != xn and yo == yn)):
+            rook_logic(board, xo, yo, xn, yn)
 
     return False
