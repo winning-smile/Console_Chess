@@ -2,6 +2,7 @@ import sys
 sys.path.append(r"C:\Users\coolm\PycharmProjects\Chess\venv\Lib\site-packages")
 import numpy as np
 from logic import *
+from game_end import win_out
 import os
 from termcolor import colored
 
@@ -98,6 +99,13 @@ def board_output(board_, i):
 def check_input(elem):
     return True if int(elem) in [1, 2, 3,4 ,5 ,6 ,7 ,8] else False
 
+def find_king(board_, color):
+    for elem in board_.ravel():
+        if elem:
+            if elem.val == "S":
+                if elem.color == color:
+                    return elem
+
 def board_input(board_, i, old, new):
     """Передвигает фигуру по координатам old на координаты new"""
     """lambda?"""
@@ -133,8 +141,18 @@ if __name__ == '__main__':
             clear_console()
             board_output(board, i)
             board, flag = board_input(board, i, list(input("\nКоординаты фигуры: ")), list(input("Куда передвинуть: ")))
+            black_king = find_king(board, "Black")
+            white_king = find_king(board, "White")
             if flag:
                 i += 1  # Turn counter
+
+            if black_king not in board:
+                win_out("White")
+                break
+            elif white_king not in board:
+                win_out("Black")
+                break
         except KeyboardInterrupt:
-            print("See you later, baby <3")
+            print("\n See you later, baby <3")
+            break
 

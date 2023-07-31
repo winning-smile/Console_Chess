@@ -85,26 +85,88 @@ def bishop_logic(board, xo, yo, xn, yn):
     if board[xo][yo].color == "White":
         if abs(xo-xn) == abs(yo-yn) and xo-xn != 0:
             if not board[xn][yn] or board[xn][yn].color == "Black":
-                xo, xn = (xn, xo) if xo > xn else (xo, xn)
-                yo, yn = (yn, yo) if yo > yn else (yo, yn)
-                for i,j in zip(range(xo+1, xn, 1), range(yo+1, yn, 1)):
-                    if board[i][j]:
-                        return False
-                    else:
-                        pass
-                return True
+                if xo > xn and yo < yn:
+                    for i, j in zip(range(xo + 1, xn, -1), range(yo + 1, yn, 1)):
+                        if i == xo + 1 or j == yo + 1:
+                            pass
+                        elif board[i - 1][j - 1] and i - 1 != xn and j - 1 != yn:
+                            return False
+                        else:
+                            pass
+                    return True
+
+                elif xo > xn and yo > yn:
+                    for i, j in zip(range(xo + 1, xn, -1), range(yo + 1, yn, -1)):
+                        if i == xo + 1 or j == yo + 1:
+                            pass
+                        elif board[i - 1][j - 1] and i - 1 != xn and j - 1 != yn:
+                            return False
+                        else:
+                            pass
+                    return True
+
+                elif xo < xn and yo > yn:
+                    for i, j in zip(range(xo + 1, xn, 1), range(yo + 1, yn, -1)):
+                        if i == xo + 1 or j == yo + 1:
+                            pass
+                        elif board[i - 1][j - 1] and i - 1 != xn and j - 1 != yn:
+                            return False
+                        else:
+                            pass
+                    return True
+
+                elif xo < xn and yo < yn:
+                    for i, j in zip(range(xo + 1, xn, 1), range(yo + 1, yn, 1)):
+                        if i == xo + 1 or j == yo + 1:
+                            pass
+                        elif board[i - 1][j - 1] and i - 1 != xn and j - 1 != yn:
+                            return False
+                        else:
+                            pass
+                    return True
 
     elif board[xo][yo].color == "Black":
         if abs(xo-xn) == abs(yo-yn) and xo-xn != 0:
             if not board[xn][yn] or board[xn][yn].color == "White":
-                xo, xn = (xn, xo) if xo > xn else (xo, xn)
-                yo, yn = (yn, yo) if yo > yn else (yo, yn)
-                for i,j in zip(range(xo+1, xn, 1), range(yo+1, yn, 1)):
-                    if board[i][j]:
-                        return False
-                    else:
-                        pass
-                return True
+                if xo > xn and yo < yn:
+                    for i, j in zip(range(xo + 1, xn, -1), range(yo + 1, yn, 1)):
+                        if i == xo + 1 or j == yo + 1:
+                            pass
+                        elif board[i - 1][j - 1] and i - 1 != xn and j - 1 != yn:
+                            return False
+                        else:
+                            pass
+                    return True
+
+                elif xo > xn and yo > yn:
+                    for i, j in zip(range(xo + 1, xn, -1), range(yo + 1, yn, -1)):
+                        if i == xo + 1 or j == yo + 1:
+                            pass
+                        elif board[i - 1][j - 1] and i - 1 != xn and j - 1 != yn:
+                            return False
+                        else:
+                            pass
+                    return True
+
+                elif xo < xn and yo > yn:
+                    for i, j in zip(range(xo + 1, xn, 1), range(yo + 1, yn, -1)):
+                        if i == xo + 1 or j == yo + 1:
+                            pass
+                        elif board[i - 1][j - 1] and i - 1 != xn and j - 1 != yn:
+                            return False
+                        else:
+                            pass
+                    return True
+
+                elif xo < xn and yo < yn:
+                    for i, j in zip(range(xo + 1, xn, 1), range(yo + 1, yn, 1)):
+                        if i == xo + 1 or j == yo + 1:
+                            pass
+                        elif board[i - 1][j - 1] and i - 1 != xn and j - 1 != yn:
+                            return False
+                        else:
+                            pass
+                    return True
 
     return False
 
@@ -171,14 +233,18 @@ def queen_logic(board, xo, yo, xn, yn):
     """Логика ферзя"""
     if board[xo][yo].color == "White":
         if (abs(xo - xn) == abs(yo - yn) and xo - xn != 0):
-            bishop_logic(board, xo, yo, xn, yn)
+            if bishop_logic(board, xo, yo, xn, yn):
+                return True
         elif ((xo == xn and yo != yn) or (xo != xn and yo == yn)):
-            rook_logic(board, xo, yo, xn, yn)
+            if rook_logic(board, xo, yo, xn, yn):
+                return True
 
     elif board[xo][yo].color == "Black":
         if (abs(xo - xn) == abs(yo - yn) and xo - xn != 0):
-            bishop_logic(board, xo, yo, xn, yn)
+            if bishop_logic(board, xo, yo, xn, yn):
+                return True
         elif ((xo == xn and yo != yn) or (xo != xn and yo == yn)):
-            rook_logic(board, xo, yo, xn, yn)
+            if bishop_logic(board, xo, yo, xn, yn):
+                return True
 
     return False
