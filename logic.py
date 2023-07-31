@@ -190,6 +190,8 @@ def rook_logic(board, xo, yo, xn, yn):
                             return False
                         else:
                             pass
+
+                board[xo][yo].first_move = False
                 return True
 
     elif board[xo][yo].color == "Black":
@@ -209,6 +211,8 @@ def rook_logic(board, xo, yo, xn, yn):
                             return False
                         else:
                             pass
+
+                board[xo][yo].first_move = False
                 return True
 
     return False
@@ -219,12 +223,57 @@ def king_logic(board, xo, yo, xn, yn):
     if board[xo][yo].color == "White":
         if abs(xo-xn) == 1 or abs(yo-yn) == 1:
             if not board[xn][yn] or board[xn][yn].color == "Black":
+                board[xo][yo].first_move = False
                 return True
+
+        # Рокировка белых
+        elif board[xo][yo].first_move and board[xn][yn].first_move and board[xn][yn].val == "R" and board[xn][yn].color == "White":
+            # короткая
+            if yn == 7:
+                for i in range(yo+1, yn, 1):
+                    if i == yo+1:
+                        pass
+                    elif board[7][i]:
+                        return False
+                    else:
+                        return "WSC"
+            # длинная
+            if yn == 0:
+                for i in range(yo, yn, -1):
+                    if i == yo:
+                        pass
+                    elif board[7][i]:
+                        return False
+                    else:
+                        return "WLC"
 
     elif board[xo][yo].color == "Black":
         if abs(xo-xn) == 1 or abs(yo-yn) == 1:
             if not board[xn][yn] or board[xn][yn].color == "White":
+                board[xo][yo].first_move = True
                 return True
+
+        # Рокировка черных
+        elif board[xo][yo].first_move and board[xn][yn].first_move and board[xn][yn].val == "R" and board[xn][yn].color == "Black":
+            # короткая
+            if yn == 7:
+                for i in range(yo+1, yn, 1):
+                    if i == yo+1:
+                        pass
+                    elif board[0][i]:
+                        return False
+                    else:
+                        return "BSC"
+            # длинная
+            if yn == 0:
+                for i in range(yo, yn, -1):
+                    if i == yo:
+                        pass
+                    elif board[0][i]:
+                        return False
+                    else:
+                        return "BLC"
+
 
     return False
 
@@ -244,7 +293,7 @@ def queen_logic(board, xo, yo, xn, yn):
             if bishop_logic(board, xo, yo, xn, yn):
                 return True
         elif ((xo == xn and yo != yn) or (xo != xn and yo == yn)):
-            if bishop_logic(board, xo, yo, xn, yn):
+            if rook_logic(board, xo, yo, xn, yn):
                 return True
 
     return False

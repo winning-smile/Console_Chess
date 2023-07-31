@@ -31,8 +31,8 @@ def start(board_):
     board_[0][0] = Figure("R", "Black", 1, [0, 0])
     board_[0][1] = Figure("K", "Black", 2, [0, 1])
     board_[0][2] = Figure("B", "Black", 3, [0, 2])
-    board_[0][3] = Figure("S", "Black", 4, [0, 3])
-    board_[0][4] = Figure("Q", "Black", 5, [0, 4])
+    board_[0][3] = Figure("Q", "Black", 4, [0, 3])
+    board_[0][4] = Figure("S", "Black", 5, [0, 4])
     board_[0][5] = Figure("B", "Black", 6, [0, 5])
     board_[0][6] = Figure("K", "Black", 7, [0, 6])
     board_[0][7] = Figure("R", "Black", 8, [0, 7])
@@ -46,11 +46,13 @@ def start(board_):
     board_[7][0] = Figure("R", "White", 25, [7, 0])
     board_[7][1] = Figure("K", "White", 26, [7, 1])
     board_[7][2] = Figure("B", "White", 27, [7, 2])
-    board_[7][3] = Figure("S", "White", 28, [7, 3])
-    board_[7][4] = Figure("Q", "White", 29, [7, 4])
+    board_[7][3] = Figure("Q", "White", 28, [7, 3])
+    board_[7][4] = Figure("S", "White", 29, [7, 4])
     board_[7][5] = Figure("B", "White", 30, [7, 5])
     board_[7][6] = Figure("K", "White", 31, [7, 6])
     board_[7][7] = Figure("R", "White", 32, [7, 7])
+
+    return board_
 
 
 def board_output(board_, i):
@@ -121,11 +123,49 @@ def board_input(board_, i, old, new):
 
     if board_[xo][yo] and color_flag == board_[xo][yo].color:
         figure = board_[xo][yo].val
-        if logic_dict[figure](board_, xo, yo, xn, yn):
+        flaj = logic_dict[figure](board_, xo, yo, xn, yn)
+        if flaj == True:
             tmp = board_[xo][yo]
             board_[xo][yo] = 0
             board_[xn][yn] = tmp
             return board_, True
+
+        elif flaj == "WSC":
+            tmp = board_[xo][yo]
+            board_[xo][yo] = 0
+            board_[xn][yn-1] = tmp
+            tmp = board_[xn][yn]
+            board_[xn][yn] = 0
+            board_[xn][yn-2] = tmp
+            return board_, True
+
+        elif flaj == "WLC":
+            tmp = board_[xo][yo]
+            board_[xo][yo] = 0
+            board_[xn][yn + 2] = tmp
+            tmp = board_[xn][yn]
+            board_[xn][yn] = 0
+            board_[xn][yo - 1] = tmp
+            return board_, True
+
+        elif flaj == "BSC":
+            tmp = board_[xo][yo]
+            board_[xo][yo] = 0
+            board_[xn][yn - 1] = tmp
+            tmp = board_[xn][yn]
+            board_[xn][yn] = 0
+            board_[xn][yn - 2] = tmp
+            return board_, True
+
+        elif flaj == "BLC":
+            tmp = board_[xo][yo]
+            board_[xo][yo] = 0
+            board_[xn][yn + 2] = tmp
+            tmp = board_[xn][yn]
+            board_[xn][yn] = 0
+            board_[xn][yo - 1] = tmp
+            return board_, True
+
         else:
             return board_, False
 
@@ -135,7 +175,7 @@ def board_input(board_, i, old, new):
 if __name__ == '__main__':
     i = 1   # Turn counter
     board = np.zeros((8, 8), dtype=object)
-    start(board)
+    board = start(board)
     while True:
         try:
             clear_console()
