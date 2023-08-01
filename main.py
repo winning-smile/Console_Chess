@@ -57,7 +57,7 @@ def start(board_):
 
 def board_output(board_, i):
     """ Выводит актуальную позицию доски """
-    print("       " + f"Turn {i}")
+    print("\n       " + f"Turn {i}")
     if (i) % 2 != 0:
         print("   " + "Turn for " + colored("WHITE", "blue"))
     else:
@@ -97,6 +97,7 @@ def board_output(board_, i):
         print("")
     print(" " * 3, end="")
     print(' '.join([f"{k + 1}" for k in range(8)]), end=" ")
+    print("\n")
 
 def check_input(elem):
     return True if int(elem) in [1, 2, 3,4 ,5 ,6 ,7 ,8] else False
@@ -164,6 +165,13 @@ def board_input(board_, i, old, new):
             tmp = board_[xn][yn]
             board_[xn][yn] = 0
             board_[xn][yo - 1] = tmp
+            return board_, True
+
+        elif flaj == "BPQ" or flaj == "WPQ":
+            tmp = board_[xo][yo]
+            board_[xo][yo] = 0
+            board_[xn][yn] = tmp
+            board_[xn][yn].val = "Q"
             return board_, True
 
         else:

@@ -10,51 +10,51 @@ def pawn_logic(board, xo, yo, xn, yn):
                     board[xo][yo].first_move = False
                 return True
 
-            elif xo-xn == 1 and yo-yn == 1:
+            elif xo-xn == 1 and abs(yo-yn) == 1:
                 if board[xn][yn] and board[xn][yn].color == "Black":
-                    return True
-
-            elif xo-xn == 1 and yo-yn == -1:
-                if board[xn][yn] and board[xn][yn].color == "Black":
+                    board[xo][yo].first_move = False
                     return True
 
         elif board[xo][yo].color == "Black":
             if (xn - xo == 1 or xn - xo == 2) and yo == yn and not board[xn][yn]:
-                if xo-xn == 2:
+                if xn-xo == 2:
                     board[xo][yo].first_move = False
                 return True
 
-            elif xn - xo == 1 and yo - yn == 1:
+            elif xn - xo == 1 and abs(yo-yn) == 1:
                 if board[xn][yn] and board[xn][yn].color == "White":
+                    board[xo][yo].first_move = False
                     return True
 
-            elif xn - xo == 1 and yo - yn == -1:
-                if board[xn][yn] and board[xn][yn].color == "White":
-                    return True
     else:
         if board[xo][yo].color == "White":
             if xo-xn == 1 and yo == yn and not board[xn][yn]:
-                return True
-
-            elif xo-xn == 1 and yo-yn == 1:
-                if board[xn][yn] and board[xn][yn].color == "Black":
+                if xn == 0:
+                    return "WPQ"
+                else:
                     return True
 
-            elif xo-xn == 1 and yo-yn == -1:
+            elif xo-xn == 1 and abs(yo-yn) == 1:
                 if board[xn][yn] and board[xn][yn].color == "Black":
-                    return True
+                    if xn == 0:
+                        return "WPQ"
+                    else:
+                        return True
 
         elif board[xo][yo].color == "Black":
-            if xn - xo == 1 and yo == yn and not board[xn][yn]:
-                return True
-
-            elif xn - xo == 1 and yo - yn == 1:
-                if board[xn][yn] and board[xn][yn].color == "White":
+            if xn-xo == 1 and yo == yn and not board[xn][yn]:
+                if xn == 7:
+                    return "BPQ"
+                else:
                     return True
 
-            elif xn - xo == 1 and yo - yn == -1:
+            elif xn-xo == 1 and abs(yo-yn) == 1:
                 if board[xn][yn] and board[xn][yn].color == "White":
-                    return True
+                    if xn == 7:
+                        return "BPQ"
+                    else:
+                        return True
+
     return False
 
 
