@@ -6,8 +6,8 @@ import numpy as np
 import main
 import logic
 
+
 class TestChess(unittest.TestCase):
-    """
     def test_castling(self):
         # Короткая рокировка белых
         WSC = [[[7," ", 7], [6, " ", 7]], [[2, " ", 1], [3, " ", 1]], [[8, " ", 7], [6, " ", 6]],
@@ -44,7 +44,7 @@ class TestChess(unittest.TestCase):
             i += 1
             print(f"\ntest to {castling_out[counter]}")
             main.board_output(tboard, i)
-    """
+
     def test_pawn_to_queen(self):
         # Белая и черная пешки становятся ферзями
         WBQ = [[[7, " ", 5], [6, " ", 5]], [[2, " ", 4], [3, " ", 4]], [[7, " ", 8], [6, " ", 8]],
