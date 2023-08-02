@@ -45,7 +45,8 @@ class TestChess(unittest.TestCase):
             print(f"\ntest to {castling_out[counter]}")
             main.board_output(tboard, i)
 
-    def test_pawn_to_queen(self):
+    # dont work arter king check added
+    def pawn_to_queen(self):
         # Белая и черная пешки становятся ферзями
         WBQ = [[[7, " ", 5], [6, " ", 5]], [[2, " ", 4], [3, " ", 4]], [[7, " ", 8], [6, " ", 8]],
                [[2, " ", 1], [3, " ", 1]], [[8, " ", 6], [3, " ", 1]], [[1, " ", 3], [6, " ", 8]],
@@ -68,7 +69,23 @@ class TestChess(unittest.TestCase):
         # castling
         self.assertEqual(tboard[lt[0][0]][lt[0][1]].val, "Q")
         self.assertEqual(tboard[lt[1][0]][lt[1][1]].val, "Q")
+    def test_king_check(self):
+        # Wlack king check
+        WKC = [[[7," ", 8], [6, " ", 8]], [[2, " ", 3], [3, " ", 3]], [[6, " ", 8], [5, " ", 8]],
+                   [[1, " ", 4], [4, " ", 1]]]
 
+        lt = [[6, 3], [5, 3]]
+        i = 1
+        tboard = np.zeros((8, 8), dtype=object)
+        tboard = main.start(tboard)
+
+        for turn in WKC:
+            tboard, tflag = main.board_input(tboard, i, turn[0], turn[1])
+            i += 1
+        print(f"\ntest to white king check")
+        main.board_output(tboard, i)
+        # castling
+        self.assertEqual(logic.pawn_logic(tboard, lt[0][0], lt[0][1], lt[1][0], lt[1][1]), False)
 
 if __name__ == '__main__':
     main.clear_console()

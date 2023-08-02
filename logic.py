@@ -1,4 +1,52 @@
 """В данном модуле описывается логика перемещения фигур"""
+import recursion_detect
+
+def figure_list(board, fcolor):
+    """Возвращает список активных фигур и координаты короля противоположного цвета"""
+    figures = []
+    king_xy = []
+
+    for elem in board.ravel():
+        if elem:
+            if elem.color == fcolor:
+                figures.append(elem)
+            elif elem.color != fcolor and elem.val == "S":
+                king_xy = [elem.x, elem.y]
+
+    return king_xy, figures
+
+
+def king_check(board, xo, yo, xn, yn):
+    depth = recursion_detect.depth()
+    if depth >= 1:
+        return True
+    """Проверяет наличие шаха при ходе"""
+    tboard = board.copy()
+
+    # Получаем список фигур оппонента и координаты своего короля
+    if board[xo][yo].color == "White":
+        king_xy, figures = figure_list(board, "Black")
+    else:
+        king_xy, figures = figure_list(board, "White")
+
+    # Делаем фиктивный ход, который собирались
+    tmp = tboard[xo][yo]
+    tboard[xo][yo] = 0
+    tboard[xn][yn] = tmp
+
+    # Перебираем все ходы фигур, отправляя их на короля
+    for figure in figures:
+        value = figure.val
+        flaj = logic_dict[value](tboard, figure.x, figure.y, king_xy[0], king_xy[1])
+        if flaj:
+            return False
+
+    return True
+
+
+def refresh_position(board, xo, yo, xn, yn):
+    board[xo][yo].x = xn
+    board[xo][yo].y = yn
 
 
 def pawn_logic(board, xo, yo, xn, yn):
@@ -6,23 +54,29 @@ def pawn_logic(board, xo, yo, xn, yn):
     if board[xo][yo].first_move:
         if board[xo][yo].color == "White":
             if (xo-xn == 1 or xo-xn == 2) and yo == yn and not board[xn][yn]:
-                if xo-xn == 2:
-                    board[xo][yo].first_move = False
+                if not king_check(board, xo, yo, xn, yn):
+                    return False
+                board[xo][yo].first_move = False
                 return True
 
             elif xo-xn == 1 and abs(yo-yn) == 1:
                 if board[xn][yn] and board[xn][yn].color == "Black":
+                    if not king_check(board, xo, yo, xn, yn):
+                        return False
                     board[xo][yo].first_move = False
                     return True
 
         elif board[xo][yo].color == "Black":
             if (xn - xo == 1 or xn - xo == 2) and yo == yn and not board[xn][yn]:
-                if xn-xo == 2:
-                    board[xo][yo].first_move = False
+                if not king_check(board, xo, yo, xn, yn):
+                    return False
+                board[xo][yo].first_move = False
                 return True
 
             elif xn - xo == 1 and abs(yo-yn) == 1:
                 if board[xn][yn] and board[xn][yn].color == "White":
+                    if not king_check(board, xo, yo, xn, yn):
+                        return False
                     board[xo][yo].first_move = False
                     return True
 
@@ -30,29 +84,45 @@ def pawn_logic(board, xo, yo, xn, yn):
         if board[xo][yo].color == "White":
             if xo-xn == 1 and yo == yn and not board[xn][yn]:
                 if xn == 0:
+                    if not king_check(board, xo, yo, xn, yn):
+                        return False
                     return "WPQ"
                 else:
+                    if not king_check(board, xo, yo, xn, yn):
+                        return False
                     return True
 
             elif xo-xn == 1 and abs(yo-yn) == 1:
                 if board[xn][yn] and board[xn][yn].color == "Black":
                     if xn == 0:
+                        if not king_check(board, xo, yo, xn, yn):
+                            return False
                         return "WPQ"
                     else:
+                        if not king_check(board, xo, yo, xn, yn):
+                            return False
                         return True
 
         elif board[xo][yo].color == "Black":
             if xn-xo == 1 and yo == yn and not board[xn][yn]:
                 if xn == 7:
+                    if not king_check(board, xo, yo, xn, yn):
+                        return False
                     return "BPQ"
                 else:
+                    if not king_check(board, xo, yo, xn, yn):
+                        return False
                     return True
 
             elif xn-xo == 1 and abs(yo-yn) == 1:
                 if board[xn][yn] and board[xn][yn].color == "White":
                     if xn == 7:
+                        if not king_check(board, xo, yo, xn, yn):
+                            return False
                         return "BPQ"
                     else:
+                        if not king_check(board, xo, yo, xn, yn):
+                            return False
                         return True
 
     return False
@@ -63,19 +133,27 @@ def knight_logic(board, xo, yo, xn, yn):
     if board[xo][yo].color == "White":
         if abs(xo-xn) == 1 and abs(yo-yn) == 2:
             if not board[xn][yn] or board[xn][yn].color == "Black":
+                if not king_check(board, xo, yo, xn, yn):
+                    return False
                 return True
 
         if abs(xo-xn) == 2 and abs(yo-yn) == 1:
             if not board[xn][yn] or board[xn][yn].color == "Black":
+                if not king_check(board, xo, yo, xn, yn):
+                    return False
                 return True
 
     elif board[xo][yo].color == "Black":
         if abs(xo - xn) == 1 and abs(yo - yn) == 2:
             if not board[xn][yn] or board[xn][yn].color == "White":
+                if not king_check(board, xo, yo, xn, yn):
+                    return False
                 return True
 
         if abs(xo - xn) == 2 and abs(yo - yn) == 1:
             if not board[xn][yn] or board[xn][yn].color == "White":
+                if not king_check(board, xo, yo, xn, yn):
+                    return False
                 return True
 
     return False
@@ -93,6 +171,8 @@ def bishop_logic(board, xo, yo, xn, yn):
                             return False
                         else:
                             pass
+                    if not king_check(board, xo, yo, xn, yn):
+                        return False
                     return True
 
                 elif xo > xn and yo > yn:
@@ -103,6 +183,8 @@ def bishop_logic(board, xo, yo, xn, yn):
                             return False
                         else:
                             pass
+                    if not king_check(board, xo, yo, xn, yn):
+                        return False
                     return True
 
                 elif xo < xn and yo > yn:
@@ -113,6 +195,8 @@ def bishop_logic(board, xo, yo, xn, yn):
                             return False
                         else:
                             pass
+                    if not king_check(board, xo, yo, xn, yn):
+                        return False
                     return True
 
                 elif xo < xn and yo < yn:
@@ -123,6 +207,8 @@ def bishop_logic(board, xo, yo, xn, yn):
                             return False
                         else:
                             pass
+                    if not king_check(board, xo, yo, xn, yn):
+                        return False
                     return True
 
     elif board[xo][yo].color == "Black":
@@ -136,6 +222,8 @@ def bishop_logic(board, xo, yo, xn, yn):
                             return False
                         else:
                             pass
+                    if not king_check(board, xo, yo, xn, yn):
+                        return False
                     return True
 
                 elif xo > xn and yo > yn:
@@ -146,6 +234,8 @@ def bishop_logic(board, xo, yo, xn, yn):
                             return False
                         else:
                             pass
+                    if not king_check(board, xo, yo, xn, yn):
+                        return False
                     return True
 
                 elif xo < xn and yo > yn:
@@ -156,6 +246,8 @@ def bishop_logic(board, xo, yo, xn, yn):
                             return False
                         else:
                             pass
+                    if not king_check(board, xo, yo, xn, yn):
+                        return False
                     return True
 
                 elif xo < xn and yo < yn:
@@ -166,6 +258,8 @@ def bishop_logic(board, xo, yo, xn, yn):
                             return False
                         else:
                             pass
+                    if not king_check(board, xo, yo, xn, yn):
+                        return False
                     return True
 
     return False
@@ -191,6 +285,9 @@ def rook_logic(board, xo, yo, xn, yn):
                         else:
                             pass
 
+                if not king_check(board, xo, yo, xn, yn):
+                    return False
+
                 board[xo][yo].first_move = False
                 return True
 
@@ -212,6 +309,9 @@ def rook_logic(board, xo, yo, xn, yn):
                         else:
                             pass
 
+                if not king_check(board, xo, yo, xn, yn):
+                    return False
+
                 board[xo][yo].first_move = False
                 return True
 
@@ -223,6 +323,9 @@ def king_logic(board, xo, yo, xn, yn):
     if board[xo][yo].color == "White":
         if abs(xo-xn) == 1 or abs(yo-yn) == 1:
             if not board[xn][yn] or board[xn][yn].color == "Black":
+                if not king_check(board, xo, yo, xn, yn):
+                    return False
+
                 board[xo][yo].first_move = False
                 return True
 
@@ -236,6 +339,7 @@ def king_logic(board, xo, yo, xn, yn):
                     elif board[7][i]:
                         return False
                     else:
+
                         return "WSC"
             # длинная
             if yn == 0:
@@ -245,11 +349,15 @@ def king_logic(board, xo, yo, xn, yn):
                     elif board[7][i]:
                         return False
                     else:
+
                         return "WLC"
 
     elif board[xo][yo].color == "Black":
         if abs(xo-xn) == 1 or abs(yo-yn) == 1:
             if not board[xn][yn] or board[xn][yn].color == "White":
+                if not king_check(board, xo, yo, xn, yn):
+                    return False
+
                 board[xo][yo].first_move = True
                 return True
 
@@ -263,6 +371,7 @@ def king_logic(board, xo, yo, xn, yn):
                     elif board[0][i]:
                         return False
                     else:
+
                         return "BSC"
             # длинная
             if yn == 0:
@@ -272,6 +381,7 @@ def king_logic(board, xo, yo, xn, yn):
                     elif board[0][i]:
                         return False
                     else:
+
                         return "BLC"
 
 
@@ -297,3 +407,6 @@ def queen_logic(board, xo, yo, xn, yn):
                 return True
 
     return False
+
+logic_dict = {"P": pawn_logic, "K": knight_logic, "B": bishop_logic,
+              "R": rook_logic, "S": king_logic, "Q": queen_logic}

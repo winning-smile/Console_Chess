@@ -7,6 +7,7 @@ from termcolor import cprint
 from pyfiglet import figlet_format
 import keyboard
 import main
+from main import *
 import cursor
 
 
@@ -69,7 +70,7 @@ def pressed_up(menu, pointer):
     print_menu(menu)
 
 def singleplayer():
-    pass
+    exec(open('main.py').read())
 
 def multiplayer():
     pass

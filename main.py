@@ -8,9 +8,8 @@ from termcolor import colored
 
 os.system('color')
 
-logic_dict = {"P" : pawn_logic, "K" : knight_logic, "B" : bishop_logic,
-              "R" : rook_logic, "S" : king_logic, "Q" : queen_logic}
-
+logic_dict = {"P": pawn_logic, "K": knight_logic, "B": bishop_logic,
+              "R": rook_logic, "S": king_logic, "Q": queen_logic}
 
 class Figure:
     def __init__(self, value, color, fid, xy):
@@ -19,6 +18,8 @@ class Figure:
         self.color = color
         self.id = fid
         self.xy = xy
+        self.x = xy[0]
+        self.y = xy[1]
 
 
 def clear_console():
@@ -126,6 +127,7 @@ def board_input(board_, i, old, new):
         figure = board_[xo][yo].val
         flaj = logic_dict[figure](board_, xo, yo, xn, yn)
         if flaj == True:
+            refresh_position(board_, xo, yo, xn, yn)
             tmp = board_[xo][yo]
             board_[xo][yo] = 0
             board_[xn][yn] = tmp
@@ -181,6 +183,7 @@ def board_input(board_, i, old, new):
         return board_, False
 
 if __name__ == '__main__':
+
     i = 1   # Turn counter
     board = np.zeros((8, 8), dtype=object)
     board = start(board)
@@ -197,9 +200,11 @@ if __name__ == '__main__':
             if black_king not in board:
                 win_out("White")
                 break
+
             elif white_king not in board:
                 win_out("Black")
                 break
+
         except KeyboardInterrupt:
             print("\n See you later, baby <3")
             break
